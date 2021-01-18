@@ -3,12 +3,16 @@ import morgan from "morgan";
 import cors from "cors";
 import createError, { HttpError } from "http-errors";
 
+import route from "./api";
+
 const app: express.Application = express();
 
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cors());
+
+app.use("/v1", route());
 
 app.get('/', (req: Request, res: Response) => {
     res.status(200).send("Hello;");
