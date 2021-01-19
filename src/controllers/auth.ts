@@ -5,9 +5,7 @@ import createHttpError from "http-errors";
 
 export default class AuthController {
     public register = async (req: Request, res: Response, next: NextFunction) => {
-        const { username, email, password } = req.body;
-        // cannot empty
-        if(!username || !email || !password) next(new createHttpError.BadRequest());
+        const { email } = req.body;
 
         const userRepository = getRepository(User);
         const exUser = await userRepository.findOne({
@@ -16,10 +14,13 @@ export default class AuthController {
             }
         });
         // does exist user
-        if(exUser) next(new createHttpError.Conflict(`${email} is already been registered`));
+        if(exUser) {
+            next(new createHttpError.Conflict(`${email} is already been registered`));
+            return;
+        }
         
         const newUser = await userRepository.create(req.body);
         const savedUser = await userRepository.save(newUser);
-        res.status(201).json(savedUser);
+        return res.status(201).json(savedUser);
     }
 }
