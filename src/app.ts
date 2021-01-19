@@ -5,6 +5,8 @@ import morgan from "morgan";
 import cors from "cors";
 import createError, { HttpError } from "http-errors";
 import dotenv from "dotenv";
+import { errorStream, infoStream } from "./config/winston";
+import moment from "moment-timezone";
 dotenv.config();
 
 // Router
@@ -15,12 +17,24 @@ import { createConnection } from "typeorm";
 import config from "./config";
 createConnection().then(() => console.log("DB Connected"));
 
+morgan.token("date", (req, res) => {
+    return moment().tz("Asia/Seoul").format();
+});
+
 const app: express.Application = express();
 
-app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cors());
+app.use(morgan("combined", { 
+        stream: errorStream, 
+        skip: (req, res) => res.statusCode < 500,
+    })
+)
+app.use(morgan("combined", {
+    stream: infoStream,
+    skip: (req, res) => res.statusCode >= 500,
+}))
 
 app.use("/v1", route());
 
