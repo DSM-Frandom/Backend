@@ -1,9 +1,19 @@
+import "reflect-metadata";
+
 import express , { Request, Response, NextFunction } from "express";
 import morgan from "morgan";
 import cors from "cors";
 import createError, { HttpError } from "http-errors";
+import dotenv from "dotenv";
+dotenv.config();
 
+// Router
 import route from "./api";
+
+// DB connect
+import { createConnection } from "typeorm";
+import config from "./config";
+createConnection().then(() => console.log("DB Connected"));
 
 const app: express.Application = express();
 
@@ -32,6 +42,6 @@ app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
     })
 })
 
-app.listen(3000, () => {
-    console.log("server running on port 3000");
+app.listen(config.port, () => {
+    console.log(`server running on port ${config.port}`);
 })
