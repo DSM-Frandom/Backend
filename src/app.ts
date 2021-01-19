@@ -5,7 +5,7 @@ import morgan from "morgan";
 import cors from "cors";
 import createError, { HttpError } from "http-errors";
 import dotenv from "dotenv";
-import { errorStream, infoStream } from "./config/winston";
+import logger, { errorStream, infoStream } from "./config/winston";
 import moment from "moment-timezone";
 dotenv.config();
 
@@ -15,7 +15,12 @@ import route from "./api";
 // DB connect
 import { createConnection } from "typeorm";
 import config from "./config";
-createConnection().then(() => console.log("DB Connected"));
+createConnection()
+.then(() => console.log("DB Connected"))
+.catch((e) => {
+    logger.error(`Mysql connection error: ${e}`);
+    process.exit(1);
+});
 
 morgan.token("date", (req, res) => {
     return moment().tz("Asia/Seoul").format();
