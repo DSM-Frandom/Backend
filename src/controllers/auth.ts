@@ -8,7 +8,6 @@ import bcrypt from "bcrypt";
 export default class AuthController {
     public register = async (req: Request, res: Response, next: NextFunction) => {
         const { email, password, username } = req.body;
-
         const userRepository = getRepository(User);
         const exUser = await userRepository.findOne({
             where: {
@@ -17,8 +16,7 @@ export default class AuthController {
         });
         // does exist user
         if(exUser) {
-            next(new createHttpError.Conflict(`${email} is already been registered`));
-            return;
+            throw new createHttpError.Conflict(`${email} is already been registered`);
         }
 
         const hash = await bcrypt.hash(password, 12);
@@ -31,5 +29,23 @@ export default class AuthController {
         const savedUser = await userRepository.save(newUser);
         const accessToken = await signAccessToken(savedUser.id);
         return res.status(201).json({ accessToken });
+    }
+
+    public login = async (req: Request, res: Response, next: NextFunction) => {
+        const { email, password } = req.body;
+        const userRepository = getRepository(User);
+        const promise_exUser: Promise<User | null> = userRepository.findOne({ where: { email: email } });
+
+        const exUser: User | null = await promise_exUser;
+        if(!exUser) {
+            throw new createHttpError.Unauthorized(`${email} is not found`);
+        }
+        const pwdCmp: boolean = bcrypt.compareSync(password, exUser.password);
+        if(!pwdCmp) {
+            throw new createHttpError.Unauthorized("Password dose not match");
+        }
+
+        const accessToken = await signAccessToken(exUser.id);
+        res.status(201).json({ accessToken });
     }
 }
