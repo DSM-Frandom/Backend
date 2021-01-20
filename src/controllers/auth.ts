@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { getRepository } from "typeorm";
-import { User } from "../models/user"
+import { User } from "../models/user";
+import { signAccessToken } from "./functions/signToken";
 import createHttpError from "http-errors";
 import bcrypt from "bcrypt";
 
@@ -28,6 +29,7 @@ export default class AuthController {
             username: username,
         });
         const savedUser = await userRepository.save(newUser);
-        return res.status(201).json(savedUser);
+        const accessToken = await signAccessToken(savedUser.id);
+        return res.status(201).json({ accessToken });
     }
 }
