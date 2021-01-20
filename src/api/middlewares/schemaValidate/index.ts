@@ -1,5 +1,7 @@
-import userSchema from "./userSchema";
+import registerSchema from "./registerSchema";
+import loginSchema from "./loginSchema";
 
 export {
-    userSchema
+    registerSchema,
+    loginSchema
 }

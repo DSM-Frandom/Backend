@@ -1,6 +1,5 @@
 import { Schema } from "joi";
 import { Request, Response, NextFunction } from "express";
-import createHttpError from "http-errors";
 
 const verify = async ({ schema, value }: { schema: Schema; value: any}) => {
     await schema.validateAsync(value);
@@ -18,7 +17,7 @@ export default ({ schema, property }: { schema: Schema; property: Property}) =>
         try {
             await verify({ schema, value: req[property] });
             next();
-        } catch {
-            next(new createHttpError.BadRequest("Invalid parameter"));
+        } catch (err) {
+            next(err);
         }
 }
