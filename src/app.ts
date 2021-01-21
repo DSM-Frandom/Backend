@@ -49,7 +49,7 @@ app.get('/', (req: Request, res: Response) => {
 })
 
 app.use((req: Request, res: Response, next: NextFunction) => {
-    next(new createError.NotFound());
+    throw new createError.NotFound();
 })
 
 app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { getRepository } from "typeorm";
-import { User } from "../models/user";
+import { User } from "../models/user.entity";
 import { signAccessToken } from "./functions/signToken";
 import createHttpError from "http-errors";
 import bcrypt from "bcrypt";
