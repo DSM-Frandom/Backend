@@ -4,7 +4,7 @@
   "description": "backend-typescript",
   "scripts": {
     "start": "nodemon --exec ts-node src/app.ts",
-    "start:prod": "cross-env NODE_ENV=production npx pm2 start ./dist/app.js --name express",
+    "start:prod": "cross-env NODE_ENV=production npx pm2 start ./dist/src/app.js --name express",
     "stop": "npx pm2 stop express & npx pm2 delete express"
   },
   "devDependencies": {
@@ -38,6 +38,7 @@
     "moment-timezone": "^0.5.32",
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
+    "path": "^0.12.7",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.2.29",
     "winston": "^3.3.3"
