@@ -2,7 +2,8 @@ import { Request, Response, Router } from "express";
 import AuthController from "../../controllers/auth";
 import { registerSchema, loginSchema } from "../middlewares/schemaValidate";
 import validation, { Property } from "../middlewares/validation";
-import tryCatchHandler from "../middlewares/tryCatchHandler"; 
+import tryCatchHandler from "../middlewares/tryCatchHandler";
+import tokenVerification from "../middlewares/tokenVerification";
 const route = Router();
 
 export default (app: Router) => {
@@ -22,7 +23,8 @@ export default (app: Router) => {
         tryCatchHandler(authController.login)
     );
 
-    route.get("/check", (req: Request, res: Response) => {
+    route.get("/check", tokenVerification,(req: Request, res: Response) => {
+        console.log(res.locals.payload);
         res.status(200).json();
     });
 }
