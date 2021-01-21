@@ -3,11 +3,12 @@ import "reflect-metadata";
 import express , { Request, Response, NextFunction } from "express";
 import morgan from "morgan";
 import cors from "cors";
+import path from "path";
 import createError, { HttpError } from "http-errors";
 import dotenv from "dotenv";
 import logger, { errorStream, infoStream } from "./config/winston";
 import moment from "moment-timezone";
-dotenv.config();
+dotenv.config({ path: path.join(__dirname, "../.env") });
 
 // Router
 import route from "./api";
