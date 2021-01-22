@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import AuthController from "../../controllers/auth";
-import { registerSchema, loginSchema } from "../middlewares/schemaValidate";
+import { registerSchema, loginSchema, refreshSchema } from "../middlewares/schemaValidate";
 import validation, { Property } from "../middlewares/validation";
 import tryCatchHandler from "../middlewares/tryCatchHandler";
 import tokenVerification from "../middlewares/tokenVerification";
@@ -21,6 +21,12 @@ export default (app: Router) => {
         "/login",
         validation({ schema: loginSchema, property: Property.BODY }),
         tryCatchHandler(authController.login)
+    );
+
+    route.patch(
+        "/refresh",
+        validation({ schema: refreshSchema, property: Property.HEADERS}),
+        tryCatchHandler(authController.refresh)
     );
 
     route.get("/check", tokenVerification,(req: Request, res: Response) => {
