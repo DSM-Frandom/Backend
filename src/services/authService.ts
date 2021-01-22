@@ -29,6 +29,22 @@ export default class AuthService {
         return { accessToken, refreshToken };
     }
 
+    public tokenRefresh({ refreshToken }: { refreshToken: string; }): { accessToken: string} {
+        const splitToken = refreshToken.split(" ");
+        if(splitToken[0] !== "Bearer") {
+            throw new createHttpError.Unauthorized();
+        }
+        const refreshPayload: any = jwt.verify(splitToken[1], this.jwtSecret);
+        if(refreshPayload.type !== "refresh") {
+            throw new createHttpError.Forbidden();
+        }
+        const accessToken = this.generateToken({
+            id: refreshPayload.id,
+            type: "access"
+        });
+        return { accessToken };
+    }
+
     private generateToken({ id, type }: { id: number, type: string }) {
         return jwt.sign({ id, type }, this.jwtSecret, {
             expiresIn: type === "access" ? "2h" : type === "refresh" ? "14d" : 0,
