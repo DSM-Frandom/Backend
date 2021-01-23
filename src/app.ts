@@ -23,6 +23,10 @@ createConnection()
     process.exit(1);
 });
 
+// Socket
+import { Server, Socket } from "socket.io";
+import SocketApp from "./socketApp";
+
 morgan.token("date", (req, res) => {
     return moment().tz("Asia/Seoul").format();
 });
@@ -62,6 +66,13 @@ app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
     })
 })
 
-app.listen(config.port, () => {
+const server = app.listen(config.port, () => {
+    const socketApp = new SocketApp();
+    const io = new Server(server, {
+        cors: {
+            origin: "*",
+        }
+    });
+    socketApp.start(io);
     console.log(`server running on port ${config.port}`);
 })
