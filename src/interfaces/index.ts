@@ -1,5 +1,7 @@
 import UserLogin from "./UserLogin";
+import Payload from "./Payload";
 
 export {
-    UserLogin
+    UserLogin,
+    Payload
 }
