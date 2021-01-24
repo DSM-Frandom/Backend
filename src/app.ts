@@ -24,7 +24,7 @@ createConnection()
 });
 
 // Socket
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
 import SocketApp from "./socketApp";
 
 morgan.token("date", (req, res) => {
