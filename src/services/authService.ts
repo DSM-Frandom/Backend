@@ -19,10 +19,12 @@ export default class AuthService {
 
         const accessToken = this.generateToken({
             id: userRecord.id,
+            nickname: userRecord.username,
             type: "access"
         });
         const refreshToken = this.generateToken({
             id: userRecord.id,
+            nickname: userRecord.username,
             type: "refresh"
         });
 
@@ -40,13 +42,14 @@ export default class AuthService {
         }
         const accessToken = this.generateToken({
             id: refreshPayload.id,
+            nickname: refreshPayload.nickname,
             type: "access"
         });
         return { accessToken };
     }
 
-    private generateToken({ id, type }: { id: number, type: string }) {
-        return jwt.sign({ id, type }, this.jwtSecret, {
+    private generateToken({ id, nickname, type }: { id: number, nickname:string, type: string }) {
+        return jwt.sign({ id, nickname,type }, this.jwtSecret, {
             expiresIn: type === "access" ? "2h" : type === "refresh" ? "14d" : 0,
         });
     }

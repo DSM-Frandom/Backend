@@ -1,5 +1,5 @@
 import { NextFunction } from "express";
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
 import jwt from "jsonwebtoken"
 import config from "./config";
 import { Payload } from "./interfaces";
@@ -7,12 +7,13 @@ import createHttpError from "http-errors";
 import { getRepository } from "typeorm";
 import { Room, User } from "./models";
 import SocketService from "./services/socketService";
+import SocketTypes from "./interfaces/SocketTypes";
 
 export default class SocketApp {
     private socketService = new SocketService();
 
     public async start(io: Server) {
-        io.use( async (socket: Socket | any, next: NextFunction | any) => {
+        io.use( async (socket: SocketTypes | any, next: NextFunction | any) => {
             try {
                 const token: string = socket.handshake.query.token;
                 const splitToken = token.split(" ");
@@ -21,6 +22,7 @@ export default class SocketApp {
                 }
                 jwt.verify(splitToken[1], config.jwtSecret, (err: Error, payload: Payload) => {
                     socket.userId = payload.id;
+                    socket.nickname = payload.nickname;
                     next();
                 });
             } catch (err) {
@@ -28,19 +30,25 @@ export default class SocketApp {
             }
         })
 
-        io.on("connect", (socket: Socket) => {
+        io.on("connect", (socket: SocketTypes) => {
             console.log("connect: " + socket.userId);
             const roomRepository = getRepository(Room);
             const userRepository = getRepository(User);
 
-            socket.on("disconnect", () => {
-                this.socketService.disconnect(roomRepository, socket.userId)
-            });
-
             socket.on("search", async () => {
                 const roomId = await this.socketService.search(roomRepository, userRepository, socket.userId);
-                socket.join(roomId);
-                console.log(`${socket.userId} is joined room ${roomId}`);
+                await socket.join(roomId);
+                socket.currentRoom = roomId;
+                console.log(`${socket.nickname} is joined room ${roomId}`);
+                socket.in(roomId).emit("joinRoom", socket.nickname);
+            });
+
+            socket.on("sendMessage", (msg: string) => {
+                socket.broadcast.in(socket.currentRoom).emit("receiveMessage", msg, socket.nickname);
+            })
+
+            socket.on("disconnect", () => {
+                this.socketService.disconnect(roomRepository, socket.userId)
             });
         })
     }
