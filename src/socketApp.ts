@@ -1,5 +1,5 @@
 import { NextFunction } from "express";
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
 import jwt from "jsonwebtoken"
 import config from "./config";
 import { Payload } from "./interfaces";
@@ -7,12 +7,13 @@ import createHttpError from "http-errors";
 import { getRepository } from "typeorm";
 import { Room, User } from "./models";
 import SocketService from "./services/socketService";
+import SocketTypes from "./interfaces/socketTypes";
 
 export default class SocketApp {
     private socketService = new SocketService();
 
     public async start(io: Server) {
-        io.use( async (socket: Socket | any, next: NextFunction | any) => {
+        io.use( async (socket: SocketTypes | any, next: NextFunction | any) => {
             try {
                 const token: string = socket.handshake.query.token;
                 const splitToken = token.split(" ");
@@ -28,7 +29,7 @@ export default class SocketApp {
             }
         })
 
-        io.on("connect", (socket: Socket) => {
+        io.on("connect", (socket: SocketTypes) => {
             console.log("connect: " + socket.userId);
             const roomRepository = getRepository(Room);
             const userRepository = getRepository(User);
