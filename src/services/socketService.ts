@@ -13,13 +13,14 @@ export default class SocketService {
 
             await roomRepository.save(newRoom);
             return String(newRoom.id);
-        } else if (exRoom) {
+        } else if (!roomRecord && exRoom) {
             exRoom.state = "W";
             roomRepository.save(exRoom);
-
             return String(exRoom.id);
         }
 
+        roomRecord.state = "F";
+        roomRepository.save(roomRecord);
         return String(roomRecord.id);
     }
 
