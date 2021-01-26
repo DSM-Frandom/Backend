@@ -1,5 +1,5 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { User } from ".";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Chat, User } from ".";
 
 export type State = "W" | "F" | "E";
 
@@ -18,4 +18,7 @@ export class Room {
     @OneToOne(type => User, { onDelete: "CASCADE" })
     @JoinColumn()
     user: User;
+
+    @OneToMany(() => Chat, chat => chat.room)
+    chats: Chat[];
 }
