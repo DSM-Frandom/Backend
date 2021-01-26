@@ -1,14 +1,16 @@
-import { Repository } from "typeorm";
-import { Room, User } from "../models";
+import { getRepository, Repository } from "typeorm";
+import { Chat, Room, User } from "../models";
 
 export default class SocketService {
-    public async search(roomRepository: Repository<Room>, userRepository: Repository<User>, userId: number) {
+    public async search(userId: number) {
+        const roomRepository = getRepository(Room);
+        const userRepository = getRepository(User);
         const roomRecord = await roomRepository.findOne({ where: { state: "W" } });
         const exRoom = await roomRepository.findOne({ where: { user: userId } });
-        const User = await userRepository.findOne(userId);
+        const user = await userRepository.findOne(userId);
         if (!roomRecord && !exRoom) {
             const newRoom = await roomRepository.create({
-                user: User
+                user: user
             });
 
             await roomRepository.save(newRoom);
@@ -24,7 +26,24 @@ export default class SocketService {
         return String(roomRecord.id);
     }
 
-    public async disconnect(roomRepository: Repository<Room>, userId: number) {
+    public async sendMessage(msg: string, user_id: number, room_id: string) {
+        const roomRepository = getRepository(Room);
+        const userRepository = getRepository(User);
+        const chatRepository = getRepository(Chat);
+        const user = await userRepository.findOne(user_id);
+        const room = await roomRepository.findOne(room_id);
+        const newChat = await chatRepository.create({
+            message: msg,
+            user: user,
+            room: room
+        })
+        await chatRepository.save(newChat);
+
+        return newChat.message;
+    }
+
+    public async disconnect(userId: number) {
+        const roomRepository = getRepository(Room);
         const roomRecord = await roomRepository.findOne({ where: { user: userId } });
         if(!roomRecord) return;
         roomRecord.state = "E";
