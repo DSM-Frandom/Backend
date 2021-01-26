@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Chat } from ".";
 
 @Entity()
 export class User {
@@ -15,5 +16,8 @@ export class User {
     password: string;
 
     @CreateDateColumn()
-    created_at: Date;   
+    created_at: Date;
+
+    @OneToMany(() => Chat, chat => chat.user)
+    chats: Chat[];
 }

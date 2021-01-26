@@ -5,7 +5,7 @@ import config from "./config";
 import { Payload } from "./interfaces";
 import createHttpError from "http-errors";
 import { getRepository } from "typeorm";
-import { Room, User } from "./models";
+import { Chat, Room, User } from "./models";
 import SocketService from "./services/socketService";
 import SocketTypes from "./interfaces/SocketTypes";
 
@@ -32,23 +32,23 @@ export default class SocketApp {
 
         io.on("connect", (socket: SocketTypes) => {
             console.log("connect: " + socket.userId);
-            const roomRepository = getRepository(Room);
-            const userRepository = getRepository(User);
 
             socket.on("search", async () => {
-                const roomId = await this.socketService.search(roomRepository, userRepository, socket.userId);
+                const roomId = await this.socketService.search(socket.userId);
                 await socket.join(roomId);
                 socket.currentRoom = roomId;
                 console.log(`${socket.nickname} is joined room ${roomId}`);
                 socket.in(roomId).emit("joinRoom", socket.nickname);
             });
 
-            socket.on("sendMessage", (msg: string) => {
+            socket.on("sendMessage", async (msg: string) => {
+                const newChat = await this.socketService.sendMessage(msg, socket.userId, socket.currentRoom);
                 socket.broadcast.in(socket.currentRoom).emit("receiveMessage", msg, socket.nickname);
+                console.log(`${socket.nickname}: ${newChat}`);
             })
 
             socket.on("disconnect", () => {
-                this.socketService.disconnect(roomRepository, socket.userId)
+                this.socketService.disconnect(socket.userId)
             });
         })
     }

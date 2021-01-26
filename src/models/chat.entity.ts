@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Room, User } from ".";
 
 @Entity()
@@ -9,12 +9,12 @@ export class Chat {
     @Column({ type: "varchar", length: 100})
     message: string;
 
-    @OneToOne(type => User, { onDelete: "CASCADE" })
-    @JoinColumn()
+    @ManyToOne(() => User, user => user.chats)
+    @JoinColumn({ name: "user_id" })
     user: User;
 
-    @OneToOne(type => Room, { onDelete: "CASCADE" })
-    @JoinColumn()
+    @ManyToOne(() => Room, room => room.chats)
+    @JoinColumn({ name: "room_id" })
     room: Room;
 
     @CreateDateColumn()
