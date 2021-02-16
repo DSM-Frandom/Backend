@@ -63,7 +63,8 @@ app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
             status: err.status || 500,
             message: err.message
         }
-    })
+    });
+    logger.error(err);
 })
 
 const server = app.listen(config.port, () => {
