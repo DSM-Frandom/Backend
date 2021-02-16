@@ -11,6 +11,7 @@ import { TokenExpiredError } from "jsonwebtoken";
 export default class AuthController {
     private authService = new AuthService(config.jwtSecret);
 
+    // 500
     public register = async (req: Request, res: Response, next: NextFunction) => {
         const { email, password, username } = req.body;
         const userRepository = getRepository(User);
@@ -32,10 +33,9 @@ export default class AuthController {
             username: username,
         });
 
-        userRepository.save(newUser).then(() => {
-            return res.status(201).json({
-                message: "Signup successfully"
-            });
+        await userRepository.save(newUser);
+        return res.status(201).json({
+            message: "Signup successfully"
         });
     }
 
