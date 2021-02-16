@@ -1,5 +1,5 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Chat } from ".";
+import { Column, CreateDateColumn, Entity, getConnection, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Chat, Report } from ".";
 
 @Entity()
 export class User {
@@ -20,4 +20,11 @@ export class User {
 
     @OneToMany(() => Chat, chat => chat.user)
     chats: Chat[];
+
+    @OneToMany(() => Report, report => report.user)
+    report: Report[];
+
+    static getRepository() {
+        return getConnection().getRepository(User);
+    }
 }
