@@ -6,7 +6,7 @@ export class Chat {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ type: "varchar", length: 100})
+    @Column({ type: "varchar", length: 100 })
     message: string;
 
     @ManyToOne(() => User, user => user.chats)
