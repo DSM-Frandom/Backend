@@ -25,9 +25,7 @@ export default class AuthController {
     public refresh = async (req: Request, res: Response, next: NextFunction) => {
         const refreshToken = req.get("x-refresh-token");
         try {
-            const accessToken = this.authService.tokenRefresh({
-                refreshToken
-            });
+            const accessToken = this.authService.tokenRefresh({ refreshToken });
             res.status(200).json(accessToken);
         } catch (err) {
             if (err === TokenExpiredError) {
