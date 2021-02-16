@@ -1,5 +1,5 @@
 import config from './src/config';
-import { User, Room, Chat } from "./src/models";
+import { User, Room, Chat, Report } from "./src/models";
 
 export = {
     type: "mysql",
@@ -9,5 +9,6 @@ export = {
     password: config.mysql.dbPass,
     database: config.mysql.dbName,
     synchronize: true,
-    entities: [User, Room, Chat]
+    logging: true,
+    entities: [User, Room, Chat, Report]
 };
