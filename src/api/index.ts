@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { auth } from "./routes";
+import { auth, user } from "./routes";
 
 export default () => {
     const app = Router();
@@ -9,6 +9,7 @@ export default () => {
     });
 
     auth(app);
+    user(app);
 
     return app;
 }

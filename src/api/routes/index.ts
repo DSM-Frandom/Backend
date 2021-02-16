@@ -1,2 +1,7 @@
 import auth from "./auth";
-export { auth };
+import user from "./user";
+
+export { 
+    auth,
+    user,
+};
