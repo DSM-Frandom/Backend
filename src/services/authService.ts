@@ -2,15 +2,23 @@ import bcrypt from "bcrypt";
 import createHttpError from "http-errors";
 import jwt from "jsonwebtoken";
 import { Repository } from "typeorm";
-import { UserLogin } from "../interfaces";
 import { User } from "../models";
+import { CreateUserDto, UserLoginDto } from "../models/user.dto";
 
 export default class AuthService {
     constructor(
         private jwtSecret: string
     ) {}
 
-    public async signIn(userLogin: UserLogin, userRepository: Repository<User>): Promise<{accessToken: string; refreshToken: string}> {
+    public async register(dto: CreateUserDto): Promise<void> {
+        const exUser = await User.findUserByEmail(dto.email);
+        if(exUser) {
+            throw new createHttpError.Conflict(`${dto.email} is already been registered`);
+        }
+        await User.createUser(dto);
+    }
+
+    public async signIn(userLogin: UserLoginDto, userRepository: Repository<User>): Promise<{accessToken: string; refreshToken: string}> {
         const userRecord = await userRepository.findOne({ email: userLogin.email });
 
         if(!userRecord || AuthService.isInvalidPassword(userRecord.password, userLogin.password)) {
