@@ -25,7 +25,7 @@ export class Report {
     }
 
     static async createReport(dto: CreateReportDto, user: User) {
-        const reportRepository = getConnection().getRepository(Report);
+        const reportRepository = this.getRepository();
         const newReport = reportRepository.create({
             ...dto,
             user
