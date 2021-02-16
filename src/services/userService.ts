@@ -1,4 +1,3 @@
-import { getCustomRepository } from "typeorm";
 import { Report, User } from "../models";
 import { CreateReportDto } from "../models/report.dto";
 
