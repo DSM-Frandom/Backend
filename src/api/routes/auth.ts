@@ -28,9 +28,4 @@ export default (app: Router) => {
         validation({ schema: refreshSchema, property: Property.HEADERS}),
         tryCatchHandler(authController.refresh)
     );
-
-    route.get("/check", tokenVerification,(req: Request, res: Response) => {
-        console.log(res.locals.payload);
-        res.status(200).json();
-    });
 }
