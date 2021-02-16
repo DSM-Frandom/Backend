@@ -4,8 +4,6 @@ import jwt from "jsonwebtoken"
 import config from "./config";
 import { Payload } from "./interfaces";
 import createHttpError from "http-errors";
-import { getRepository } from "typeorm";
-import { Chat, Room, User } from "./models";
 import SocketService from "./services/socketService";
 import SocketTypes from "./interfaces/SocketTypes";
 
@@ -53,6 +51,7 @@ export default class SocketApp {
             })
 
             socket.on("disconnect", () => {
+                socket.in(socket.currentRoom).emit("leaveRoom", socket.nickname);
                 this.socketService.disconnect(socket.userId)
             });
         })
