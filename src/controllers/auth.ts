@@ -1,6 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import { getRepository } from "typeorm";
-import { User } from "../models/user.entity";
 import createHttpError from "http-errors";
 import config from "../config";
 import AuthService from "../services/authService";
@@ -20,8 +18,7 @@ export default class AuthController {
 
     public login = async (req: Request, res: Response, next: NextFunction) => {
         const userLogin: UserLoginDto = req.body;
-        const userRepository = getRepository(User);
-        const tokens = await this.authService.signIn(userLogin, userRepository);
+        const tokens = await this.authService.login(userLogin);
         return res.status(200).json(tokens);
     }
 
