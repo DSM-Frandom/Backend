@@ -1,7 +1,6 @@
 import bcrypt from "bcrypt";
 import createHttpError from "http-errors";
 import jwt from "jsonwebtoken";
-import { Repository } from "typeorm";
 import { User } from "../models";
 import { CreateUserDto, UserLoginDto } from "../models/user.dto";
 
@@ -18,10 +17,10 @@ export default class AuthService {
         await User.createUser(dto);
     }
 
-    public async signIn(userLogin: UserLoginDto, userRepository: Repository<User>): Promise<{accessToken: string; refreshToken: string}> {
-        const userRecord = await userRepository.findOne({ email: userLogin.email });
+    public async login(dto: UserLoginDto): Promise<{accessToken: string; refreshToken: string}> {
+        const userRecord = await User.findUserByEmail(dto.email);
 
-        if(!userRecord || AuthService.isInvalidPassword(userRecord.password, userLogin.password)) {
+        if(!userRecord || AuthService.isInvalidPassword(userRecord.password, dto.password)) {
             throw new createHttpError.Unauthorized("Invalid id or password");
         }
 
