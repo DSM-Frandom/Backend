@@ -42,8 +42,7 @@ export default class SocketApp {
 
                 socket.in(roomId).emit("joinRoom", socket.nickname);
                 if(io.sockets.adapter.rooms.get(roomId).size === 2) {
-                    socket.in(roomId).emit("matched");
-                    console.log("mayched");
+                    io.in(roomId).emit("matched");
                 }
             });
 
