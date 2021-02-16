@@ -38,7 +38,7 @@ export default class SocketApp {
                 await socket.join(roomId);
                 socket.currentRoom = roomId;
                 console.log(`${socket.nickname} is joined room ${roomId}`);
-                socket.in(roomId).emit("joinRoom", socket.nickname);
+                io.in(roomId).emit("joinRoom", socket.nickname);
             });
 
             socket.on("sendMessage", async (msg: string) => {
