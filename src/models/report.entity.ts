@@ -20,6 +20,10 @@ export class Report {
     @JoinColumn({ name: "user_id" })
     user: User;
 
+    static getRepository() {
+        return getConnection().getRepository(Report);
+    }
+
     static async createReport(dto: CreateReportDto, user: User) {
         const reportRepository = getConnection().getRepository(Report);
         const newReport = reportRepository.create({
