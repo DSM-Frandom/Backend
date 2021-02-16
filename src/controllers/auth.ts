@@ -1,48 +1,24 @@
 import { Request, Response, NextFunction } from "express";
-import { getRepository } from "typeorm";
-import { User } from "../models/user.entity";
 import createHttpError from "http-errors";
-import bcrypt from "bcrypt";
 import config from "../config";
-import { UserLogin } from "../interfaces";
 import AuthService from "../services/authService";
 import { TokenExpiredError } from "jsonwebtoken";
+import { CreateUserDto, UserLoginDto } from "../models/user.dto";
 
 export default class AuthController {
     private authService = new AuthService(config.jwtSecret);
 
-    // 500
     public register = async (req: Request, res: Response, next: NextFunction) => {
-        const { email, password, username } = req.body;
-        const userRepository = getRepository(User);
-        const exUser = await userRepository.findOne({
-            where: {
-                email: email
-            }
-        });
-        // does exist user
-        if(exUser) {
-            throw new createHttpError.Conflict(`${email} is already been registered`);
-        }
-
-        const hash = await bcrypt.hash(password, 12);
-
-        const newUser = await userRepository.create({
-            email: email,
-            password: hash,
-            username: username,
-        });
-
-        await userRepository.save(newUser);
+        const userRegister: CreateUserDto = req.body;
+        await this.authService.register(userRegister);
         return res.status(201).json({
             message: "Signup successfully"
         });
     }
 
     public login = async (req: Request, res: Response, next: NextFunction) => {
-        const userLogin: UserLogin = req.body;
-        const userRepository = getRepository(User);
-        const tokens = await this.authService.signIn(userLogin, userRepository);
+        const userLogin: UserLoginDto = req.body;
+        const tokens = await this.authService.login(userLogin);
         return res.status(200).json(tokens);
     }
 
