@@ -45,7 +45,9 @@ export default class SocketService {
     public async disconnect(userId: number) {
         const roomRepository = getRepository(Room);
         const roomRecord = await roomRepository.findOne({ where: { user: userId } });
-        if(!roomRecord) return;
+        if(!roomRecord) {
+            return;
+        }
         roomRecord.state = "E";
         roomRepository.save(roomRecord);
 
