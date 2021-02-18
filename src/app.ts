@@ -16,7 +16,8 @@ import route from "./api";
 // DB connect
 import { createConnection } from "typeorm";
 import config from "./config";
-createConnection()
+import { createOptions } from "./ormconfig";
+createConnection(createOptions)
 .then(() => console.log("DB Connected"))
 .catch((e) => {
     logger.error(`Mysql connection error: ${e}`);
