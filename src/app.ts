@@ -69,6 +69,11 @@ app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
 })
 
 const server = app.listen(config.port, () => {
+    console.log(`server running on port ${config.port}`);
+    socketServer();
+});
+
+const socketServer = () => {
     const socketApp = new SocketApp();
     const io = new Server(server, {
         cors: {
@@ -76,5 +81,4 @@ const server = app.listen(config.port, () => {
         }
     });
     socketApp.start(io);
-    console.log(`server running on port ${config.port}`);
-})
+}
