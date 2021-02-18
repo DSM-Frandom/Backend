@@ -1,7 +1,8 @@
-import config from './src/config';
-import { User, Room, Chat, Report, File } from "./src/models";
+import { ConnectionOptions } from 'typeorm';
+import config from './config';
+import { User, Room, Chat, Report, File } from "./models";
 
-export = {
+export const createOptions: ConnectionOptions = {
     type: "mysql",
     host: config.mysql.dbHost,
     port: Number(config.mysql.dbPort),
@@ -9,6 +10,6 @@ export = {
     password: config.mysql.dbPass,
     database: config.mysql.dbName,
     synchronize: true,
-    logging: true,
+    logging: false,
     entities: [User, Room, Chat, Report, File]
 };
