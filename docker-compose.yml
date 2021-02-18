@@ -1,0 +1,12 @@
+version: '3'
+services:
+  db:
+    image: mysql
+    ports:
+      - '3306:3306'
+  node:
+    image: frandom
+    depends_on:
+      - db
+    ports:
+      - '3000:3000'
