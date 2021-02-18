@@ -1,4 +1,4 @@
-import { Request, Response, Router } from "express";
+import { Router } from "express";
 import AuthController from "../../controllers/auth";
 import { registerSchema, loginSchema, refreshSchema } from "../middlewares/schemaValidate";
 import validation, { Property } from "../middlewares/validation";
