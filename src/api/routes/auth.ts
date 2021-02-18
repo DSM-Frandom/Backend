@@ -1,9 +1,8 @@
-import { Request, Response, Router } from "express";
+import { Router } from "express";
 import AuthController from "../../controllers/auth";
 import { registerSchema, loginSchema, refreshSchema } from "../middlewares/schemaValidate";
 import validation, { Property } from "../middlewares/validation";
 import tryCatchHandler from "../middlewares/tryCatchHandler";
-import tokenVerification from "../middlewares/tokenVerification";
 const route = Router();
 
 export default (app: Router) => {
@@ -23,7 +22,7 @@ export default (app: Router) => {
         tryCatchHandler(authController.login)
     );
 
-    route.patch(
+    route.get(
         "/refresh",
         validation({ schema: refreshSchema, property: Property.HEADERS}),
         tryCatchHandler(authController.refresh)

@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, getConnection, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Chat, Report } from ".";
+import { Chat, Report, File } from ".";
 import { CreateUserDto } from "./user.dto";
 import bcrypt from "bcrypt";
 
@@ -25,6 +25,9 @@ export class User {
 
     @OneToMany(() => Report, report => report.user)
     report: Report[];
+
+    @OneToMany(() => File, file => file.user)
+    file: File[];
 
     static getRepository() {
         return getConnection().getRepository(User);
