@@ -11,6 +11,12 @@ export default (app: Router) => {
 
     app.use("/user", route);
 
+    route.get(
+        "/profile",
+        tokenVerification,
+        tryCatchHandler(userController.getProfile)
+    )
+
     route.post(
         "/report",
         tokenVerification,
