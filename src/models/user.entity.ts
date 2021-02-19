@@ -3,19 +3,33 @@ import { Chat, Report, File } from ".";
 import { CreateUserDto } from "./user.dto";
 import bcrypt from "bcrypt";
 
+export enum Gender {
+    MAN = "M",
+    WOMAN = "W"
+}
+
 @Entity()
 export class User {
     @PrimaryGeneratedColumn() 
     id: number;
 
-    @Column({ type: "varchar", length: 100, unique: true })
+    @Column({ length: 100, unique: true })
     email: string;
 
-    @Column({ type: "varchar", length: 16 })
+    @Column({ length: 16 })
     username: string;
 
-    @Column({ type: "varchar", length: 255})
+    @Column()
     password: string;
+
+    @Column({ type: "tinyint", default: 1 })
+    age: number;
+
+    @Column({ type: "enum", enum: Gender })
+    gender: Gender;
+
+    @Column({ nullable: true })
+    profile_img: string;
 
     @CreateDateColumn()
     created_at: Date;
@@ -40,6 +54,8 @@ export class User {
             email: dto.email,
             password: hash,
             username: dto.username,
+            age: dto.age,
+            gender: dto.gender
         });
         await userRepository.save(newUser);
     }
