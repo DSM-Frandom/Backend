@@ -10,4 +10,10 @@ export default class FileController {
         await this.fileService.uploadFile(file.location, res.locals.payload.id);
         return res.status(200).json({ message: "File uploaded", url: file.location });
     }
+
+    public uploadProfile = async (req: Request, res: Response, next: NextFunction) => {
+        const file: CustomMulterFile = req.file;
+        await this.fileService.uploadProfile(file.location, res.locals.payload.id);
+        return res.status(200).json({ message: "Profile uploaded", url: file.location });
+    }
 }

@@ -16,4 +16,11 @@ export default (app: Router) => {
         upload.single('file'),
         tryCatchHandler(fileController.uploadFile)
     );
+
+    route.post(
+        "/profile",
+        tokenVerification,
+        upload.single('file'),
+        tryCatchHandler(fileController.uploadProfile)
+    );
 }
