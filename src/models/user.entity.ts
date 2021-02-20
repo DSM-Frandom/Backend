@@ -60,6 +60,11 @@ export class User {
         await userRepository.save(newUser);
     }
 
+    static async uploadProfile(id: number, location: string): Promise<void> {
+        const userRepository = this.getRepository();
+        userRepository.update(id, { profile_img: location });
+    }
+
     static async findUserByEmail(email: string): Promise<User> {
         return await this.getRepository().findOne({ email });
     }
