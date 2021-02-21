@@ -11,11 +11,13 @@ export default Joi.object().keys({
             'string.base': error.TITLE,
             'string.min': error.TITLE,
             'string.max': "제목을 80자 이하로 입력해주세요",
+            'string.empty': error.TITLE,
             'any.required': error.TITLE
         }),
     description: Joi.string().required()
         .messages({
             'string.base': error.DESCRIPTION,
+            'string.empty': error.DESCRIPTION,
             'any.required': error.DESCRIPTION
         }),
 }).unknown()
