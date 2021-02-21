@@ -1,5 +1,6 @@
 import { Schema } from "joi";
 import { Request, Response, NextFunction } from "express";
+import createHttpError from "http-errors";
 
 const verify = async ({ schema, value }: { schema: Schema; value: any}) => {
     await schema.validateAsync(value);
@@ -18,6 +19,6 @@ export default ({ schema, property }: { schema: Schema; property: Property}) =>
             await verify({ schema, value: req[property] });
             next();
         } catch (err) {
-            next(err);
+            next(new createHttpError.BadRequest(err.message));
         }
 }
