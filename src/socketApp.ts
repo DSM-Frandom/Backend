@@ -52,7 +52,8 @@ export default class SocketApp {
 
             socket.on("disconnect", () => {
                 socket.in(socket.currentRoom).emit("leaveRoom", socket.nickname);
-                this.socketService.disconnect(socket.userId)
+                socket.leave(socket.currentRoom);
+                this.socketService.disconnect(socket.userId);
             });
         })
     }
