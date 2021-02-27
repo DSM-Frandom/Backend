@@ -49,6 +49,11 @@ export default class SocketApp {
                 socket.leave(socket.currentRoom);
             });
 
+            socket.on("fileUpload", (url: string) => {
+                console.log(`${socket.nickname} uploaded file`);
+                socket.in(socket.currentRoom).emit("fileUpload", url);
+            })
+
             socket.on("sendMessage", async (msg: string) => {
                 const newChat = await this.socketService.sendMessage(msg, socket.userId, socket.currentRoom);
                 socket.broadcast.in(socket.currentRoom).emit("receiveMessage", msg, socket.nickname);
