@@ -44,6 +44,11 @@ export default class SocketApp {
                 }
             });
 
+            socket.on("leaveRoom", () => {
+                console.log(`${socket.nickname} is leave room ${socket.currentRoom}`);
+                socket.leave(socket.currentRoom);
+            });
+
             socket.on("sendMessage", async (msg: string) => {
                 const newChat = await this.socketService.sendMessage(msg, socket.userId, socket.currentRoom);
                 socket.broadcast.in(socket.currentRoom).emit("receiveMessage", msg, socket.nickname);
