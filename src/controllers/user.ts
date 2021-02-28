@@ -19,8 +19,8 @@ export default class UserController {
         });
     }
 
-    public createLike = async (req: CustomRequest, res: Response, next: NextFunction) => {
-        await this.userService.createLike(decodeURI(req.url).replace(/\/like\//, ""), res.locals.payload.id);
+    public like = async (req: CustomRequest, res: Response, next: NextFunction) => {
+        await this.userService.like(decodeURI(req.url).replace(/\/like\//, ""), res.locals.payload.id);
         return res.status(200).json({
             message: "Like successfully",
         });
