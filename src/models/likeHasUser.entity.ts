@@ -22,10 +22,13 @@ export class LikeHasUser {
     }
 
     // same user exception
-    static async createLikeHasUser(target: User, user: User): Promise<void> {
+    static async createLikeHasUser(user: User, like: Like): Promise<void> {
         const likeHasUserRepository = this.getRepository();
-        const like = await Like.getRepository().findOne({ user: target });
-        const newLike = likeHasUserRepository.create({ user, like, });
+        const newLike = likeHasUserRepository.create({ user, like });
         await likeHasUserRepository.save(newLike);
+    }
+
+    static async findLikeHasUserByUserAndLike(user: User, like: Like): Promise<LikeHasUser> {
+        return await this.getRepository().findOne({ user, like });
     }
 }
