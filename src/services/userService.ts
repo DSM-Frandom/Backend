@@ -1,5 +1,5 @@
 import createHttpError from "http-errors";
-import { Report, User } from "../models";
+import { LikeHasUser, Report, User } from "../models";
 import { CreateReportDto } from "../models/report.dto";
 
 export default class UserService {
@@ -20,5 +20,15 @@ export default class UserService {
         }
 
         await Report.createReport(dto, user);
+    }
+
+    public async createLike(username: string, id: number): Promise<void> {
+        const target = await User.findUserByUsername(username);
+        const user = await User.getRepository().findOne(id);
+        if(!target || !user) {
+            throw new createHttpError.NotFound('User not found');
+        }
+
+        await LikeHasUser.createLikeHasUser(target, user);
     }
 }
