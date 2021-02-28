@@ -15,7 +15,7 @@ export class Room {
     })
     state: State;
 
-    @OneToOne(type => User, { onDelete: "CASCADE" })
+    @OneToOne(() => User, { onDelete: "CASCADE" })
     @JoinColumn()
     user: User;
 
