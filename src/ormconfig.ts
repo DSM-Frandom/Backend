@@ -1,6 +1,6 @@
 import { ConnectionOptions } from 'typeorm';
 import config from './config';
-import { User, Room, Chat, Report, File } from "./models";
+import { User, Room, Chat, Report, File, Like, LikeHasUser } from "./models";
 
 export const createOptions: ConnectionOptions = {
     type: "mysql",
@@ -11,5 +11,13 @@ export const createOptions: ConnectionOptions = {
     database: config.mysql.dbName,
     synchronize: true,
     logging: false,
-    entities: [User, Room, Chat, Report, File]
+    entities: [
+        User,
+        Room,
+        Chat, 
+        Report, 
+        File, 
+        Like,
+        LikeHasUser,
+    ]
 };
