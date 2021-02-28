@@ -21,10 +21,9 @@ export class LikeHasUser {
         return getConnection().getRepository(LikeHasUser);
     }
 
-    // same user exception
-    static async createLikeHasUser(user: User, like: Like): Promise<void> {
+    static async createLikeHasUser(user: User, like: Like, status: number): Promise<void> {
         const likeHasUserRepository = this.getRepository();
-        const newLike = likeHasUserRepository.create({ user, like });
+        const newLike = likeHasUserRepository.create({ user, like, status });
         await likeHasUserRepository.save(newLike);
     }
 
