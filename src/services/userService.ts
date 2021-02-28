@@ -22,14 +22,14 @@ export default class UserService {
         await Report.createReport(dto, user);
     }
 
-    public async createLike(username: string, id: number): Promise<void> {
+    public async like(username: string, id: number): Promise<void> {
         const target = await User.findUserByUsername(username);
         const user = await User.getRepository().findOne(id);
         if(!target || !user) {
             throw new createHttpError.NotFound('User not found');
         }
         if(target.id === user.id) {
-            throw new createHttpError.BadRequest('You can\'t like yourself')
+            throw new createHttpError.BadRequest('You can\'t like yourself');
         }
 
         const like = await Like.getRepository().findOne({ user: target });
@@ -37,6 +37,7 @@ export default class UserService {
         if(likeHasUserRecord) {
             throw new createHttpError.BadRequest('Already liked user');
         }
-        await LikeHasUser.createLikeHasUser(user, like);
+        await LikeHasUser.createLikeHasUser(user, like, 1);
+        await Like.getRepository().update(like, { count: like.count + 1 });
     }
 }
