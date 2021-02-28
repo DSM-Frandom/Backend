@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import createHttpError from "http-errors";
 import jwt from "jsonwebtoken";
-import { User } from "../models";
+import { Like, User } from "../models";
 import { CreateUserDto, UserLoginDto } from "../models/user.dto";
 
 export default class AuthService {
@@ -10,18 +10,25 @@ export default class AuthService {
     ) {}
 
     public async register(dto: CreateUserDto): Promise<void> {
-        const exUser = await User.findUserByEmail(dto.email);
-        if(exUser) {
-            throw new createHttpError.Conflict(`${dto.email} is already been registered`);
+        const exUserEmail = await User.findUserByEmail(dto.email);
+        const exUserUsername = await User.findUserByUsername(dto.username);
+        if(exUserEmail) {
+            throw new createHttpError.Conflict(`${dto.email} 이미 가입된 이메일입니다.`);
         }
-        await User.createUser(dto);
+
+        if(exUserUsername) {
+            throw new createHttpError.Conflict(`${dto.username} 이미 가입된 이름입니다.`)
+        }
+
+        const user = await User.createUser(dto);
+        await Like.createLike(user);
     }
 
     public async login(dto: UserLoginDto): Promise<{accessToken: string; refreshToken: string}> {
         const userRecord = await User.findUserByEmail(dto.email);
 
         if(!userRecord || AuthService.isInvalidPassword(userRecord.password, dto.password)) {
-            throw new createHttpError.Unauthorized("Invalid id or password");
+            throw new createHttpError.Unauthorized("아이디 또는 비밀번호를 확인하여 주세요!");
         }
 
         const accessToken = this.generateToken({
