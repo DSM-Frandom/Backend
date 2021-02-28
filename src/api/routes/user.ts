@@ -28,6 +28,6 @@ export default (app: Router) => {
         "/like/:user_id",
         tokenVerification,
         validation({ schema: likeSchema, property: Property.PARAMS }),
-        tryCatchHandler(userController.createLike)
+        tryCatchHandler(userController.like)
     );
 }
