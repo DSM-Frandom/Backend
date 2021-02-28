@@ -1,5 +1,5 @@
 import createHttpError from "http-errors";
-import { LikeHasUser, Report, User } from "../models";
+import { Like, LikeHasUser, Report, User } from "../models";
 import { CreateReportDto } from "../models/report.dto";
 
 export default class UserService {
@@ -28,7 +28,15 @@ export default class UserService {
         if(!target || !user) {
             throw new createHttpError.NotFound('User not found');
         }
+        if(target.id === user.id) {
+            throw new createHttpError.BadRequest('You can\'t like yourself')
+        }
 
-        await LikeHasUser.createLikeHasUser(target, user);
+        const like = await Like.getRepository().findOne({ user: target });
+        const likeHasUserRecord = await LikeHasUser.findLikeHasUserByUserAndLike(user, like);
+        if(likeHasUserRecord) {
+            throw new createHttpError.BadRequest('Already liked user');
+        }
+        await LikeHasUser.createLikeHasUser(user, like);
     }
 }
