@@ -25,4 +25,11 @@ export default class UserController {
             message: "Like successfully",
         });
     }
+
+    public dislike = async (req: CustomRequest, res: Response, next: NextFunction) => {
+        await this.userService.dislike(decodeURI(req.url).replace(/\/dislike\//, ""), res.locals.payload.id);
+        return res.status(200).json({
+            message: "Dislike successfully",
+        });
+    }
 }
