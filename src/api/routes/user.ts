@@ -30,4 +30,11 @@ export default (app: Router) => {
         validation({ schema: likeSchema, property: Property.PARAMS }),
         tryCatchHandler(userController.like)
     );
+
+    route.post(
+        "/dislike/:user_id",
+        tokenVerification,
+        validation({ schema: likeSchema, property: Property.PARAMS }),
+        tryCatchHandler(userController.dislike)
+    );
 }
