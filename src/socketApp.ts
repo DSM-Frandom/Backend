@@ -1,6 +1,6 @@
 import { NextFunction } from "express";
 import { Server } from "socket.io";
-import jwt from "jsonwebtoken"
+import jwt, { TokenExpiredError } from "jsonwebtoken"
 import config from "./config";
 import { Payload } from "./interfaces";
 import createHttpError from "http-errors";
@@ -24,6 +24,9 @@ export default class SocketApp {
                     next();
                 });
             } catch (err) {
+                if(err instanceof TokenExpiredError) {
+                    throw new createHttpError.Gone();
+                }
                 next(err);
             }
         })
