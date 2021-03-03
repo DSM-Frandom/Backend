@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import { Like, User } from "../models";
 import { CreateUserDto, UserLoginDto } from "../models/user.dto";
 import smtpTransport from "../config/email";
+import client from "../config/redis";
+import util from "util";
 
 export default class AuthService {
     constructor(
@@ -46,21 +48,34 @@ export default class AuthService {
         return { accessToken, refreshToken };
     }
 
-    public async verify(email: string): Promise<number> {
-        const number = this.generateRandom(111111, 999999);
+    public async verify(email: string): Promise<void> {
+        const verifyNumber = this.generateRandom(111111, 999999);
+        client.set(email, verifyNumber.toString(), (err) => {
+            if(err) {
+                console.log(err);
+                throw new createHttpError.InternalServerError();
+            }
+            client.expire(email, 500);
+        });
+    
         const mailOptions = {
             from: `"Frandom" <${process.env.SMTP_USER}>`,
             to: email,
-            subject: "[frandom] 인증번호",
-            text: `인증번호: ${number}`
+            subject: "[Frandom] 인증번호 발송",
+            text: `인증번호: ${verifyNumber}`
         }
 
         await smtpTransport.sendMail(mailOptions).catch(err => {
             console.log(err);
-            throw new createHttpError.BadRequest();
+            throw new createHttpError.BadRequest(); 
         });
         smtpTransport.close();
-        return number;
+    }
+
+    public async getVerify(email: string): Promise<string> {
+        const getValuePromise = util.promisify(client.get).bind(client);
+        const verifyNumber = await getValuePromise(email);
+        return verifyNumber;
     }
 
     public tokenRefresh({ refreshToken }: { refreshToken: string; }): { accessToken: string} {
