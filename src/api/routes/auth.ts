@@ -21,6 +21,11 @@ export default (app: Router) => {
         validation({ schema: loginSchema, property: Property.BODY }),
         tryCatchHandler(authController.login)
     );
+    
+    route.get(
+        "/verify",
+        tryCatchHandler(authController.verify)
+    );
 
     route.get(
         "/refresh",
