@@ -22,6 +22,14 @@ export default class AuthController {
         return res.status(200).json(tokens);
     }
 
+    public verify = async (req: Request, res: Response, next: NextFunction) => {
+        const { email } = req.body;
+        const accessNumber = await this.authService.verify(email);
+        return res.status(200).json({
+            accessNumber
+        });
+    }
+
     public refresh = async (req: Request, res: Response, next: NextFunction) => {
         const refreshToken = req.get("x-refresh-token");
         try {

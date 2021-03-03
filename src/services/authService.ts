@@ -3,6 +3,7 @@ import createHttpError from "http-errors";
 import jwt from "jsonwebtoken";
 import { Like, User } from "../models";
 import { CreateUserDto, UserLoginDto } from "../models/user.dto";
+import smtpTransport from "../config/email";
 
 export default class AuthService {
     constructor(
@@ -45,6 +46,23 @@ export default class AuthService {
         return { accessToken, refreshToken };
     }
 
+    public async verify(email: string): Promise<number> {
+        const number = this.generateRandom(111111, 999999);
+        const mailOptions = {
+            from: `"Frandom" <${process.env.SMTP_USER}>`,
+            to: email,
+            subject: "[frandom] 인증번호",
+            text: `인증번호: ${number}`
+        }
+
+        await smtpTransport.sendMail(mailOptions).catch(err => {
+            console.log(err);
+            throw new createHttpError.BadRequest();
+        });
+        smtpTransport.close();
+        return number;
+    }
+
     public tokenRefresh({ refreshToken }: { refreshToken: string; }): { accessToken: string} {
         const splitToken = refreshToken.split(" ");
         if(splitToken[0] !== "Bearer") {
@@ -67,6 +85,11 @@ export default class AuthService {
             expiresIn: type === "access" ? "2h" : type === "refresh" ? "14d" : 0,
         });
     }
+    
+    private generateRandom = (min: number, max: number) => {
+        let ranNum = Math.floor(Math.random()*(max-min+1)) + min;
+        return ranNum;
+    } 
 
     private static isInvalidPassword(dbPassword: string, inputPassword: string): boolean {
         return !bcrypt.compareSync(inputPassword, dbPassword);
