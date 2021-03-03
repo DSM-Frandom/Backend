@@ -24,10 +24,16 @@ export default class AuthController {
 
     public verify = async (req: Request, res: Response, next: NextFunction) => {
         const { email } = req.body;
-        const accessNumber = await this.authService.verify(email);
+        await this.authService.verify(email);
         return res.status(200).json({
-            accessNumber
+            message: "Verify number sent"
         });
+    }
+
+    public getVerify = async (req: Request, res: Response, next: NextFunction) => {
+        const { email } = req.body;
+        const verifyNumber = await this.authService.getVerify(email);
+        return res.status(200).json({ verifyNumber });
     }
 
     public refresh = async (req: Request, res: Response, next: NextFunction) => {
