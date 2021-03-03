@@ -1,6 +1,6 @@
 import { Router } from "express";
 import AuthController from "../../controllers/auth";
-import { registerSchema, loginSchema, refreshSchema } from "../middlewares/schemaValidate";
+import { registerSchema, loginSchema, refreshSchema, verifySchema } from "../middlewares/schemaValidate";
 import validation, { Property } from "../middlewares/validation";
 import tryCatchHandler from "../middlewares/tryCatchHandler";
 const route = Router();
@@ -21,10 +21,17 @@ export default (app: Router) => {
         validation({ schema: loginSchema, property: Property.BODY }),
         tryCatchHandler(authController.login)
     );
+
+    route.post(
+        "/verify",
+        validation({ schema: verifySchema, property: Property.BODY }),
+        tryCatchHandler(authController.verify)
+    );
     
     route.get(
         "/verify",
-        tryCatchHandler(authController.verify)
+        validation({ schema: verifySchema, property: Property.BODY }),
+        tryCatchHandler(authController.getVerify)
     );
 
     route.get(
