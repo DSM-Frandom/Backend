@@ -30,10 +30,10 @@ export default class AuthController {
         });
     }
 
-    public getVerify = async (req: Request, res: Response, next: NextFunction) => {
-        const { email } = req.body;
-        const verifyNumber = await this.authService.getVerify(email);
-        return res.status(200).json({ verifyNumber });
+    public checkVerify = async (req: Request, res: Response, next: NextFunction) => {
+        const { email, verify } = req.body;
+        await this.authService.checkVerify(email, verify);
+        return res.status(200).json({ message: "Success" });
     }
 
     public refresh = async (req: Request, res: Response, next: NextFunction) => {
