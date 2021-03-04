@@ -1,6 +1,6 @@
 import { Router } from "express";
 import UserController from "../../controllers/user";
-import { likeSchema, reportSchema } from "../middlewares/schemaValidate";
+import { likeSchema, reportSchema, usernameSchema } from "../middlewares/schemaValidate";
 import tokenVerification from "../middlewares/tokenVerification";
 import tryCatchHandler from "../middlewares/tryCatchHandler";
 import validation, { Property } from "../middlewares/validation";
@@ -22,6 +22,13 @@ export default (app: Router) => {
         tokenVerification,
         validation({ schema: reportSchema, property: Property.BODY }),
         tryCatchHandler(userController.createReport)
+    );
+
+    route.get(
+        "/like/:username",
+        tokenVerification,
+        validation({ schema: usernameSchema, property: Property.PARAMS }),
+        tryCatchHandler(userController.getLike)
     );
 
     route.post(
