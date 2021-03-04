@@ -72,10 +72,14 @@ export default class AuthService {
         smtpTransport.close();
     }
 
-    public async getVerify(email: string): Promise<string> {
+    public async checkVerify(email: string, verify: string): Promise<boolean> {
         const getValuePromise = util.promisify(client.get).bind(client);
-        const verifyNumber = await getValuePromise(email);
-        return verifyNumber;
+        const redisGetValueByEmail = await getValuePromise(email);
+
+        if(redisGetValueByEmail !== verify) {
+            throw new createHttpError.BadRequest("Does not match");
+        }
+        return true;
     }
 
     public tokenRefresh({ refreshToken }: { refreshToken: string; }): { accessToken: string} {
