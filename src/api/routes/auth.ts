@@ -28,9 +28,8 @@ export default (app: Router) => {
         tryCatchHandler(authController.verify)
     );
     
-    route.get(
-        "/verify",
-        validation({ schema: verifySchema, property: Property.BODY }),
+    route.post(
+        "/check",
         validation({ schema: checkVerifySchema, property: Property.BODY }),
         tryCatchHandler(authController.checkVerify)
     );
