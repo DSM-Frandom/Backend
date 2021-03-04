@@ -20,7 +20,7 @@ export default class AuthService {
         }
 
         if(exUserUsername) {
-            throw new createHttpError.Conflict(`${dto.username} 이미 가입된 이름입니다.`)
+            throw new createHttpError.Conflict(`${dto.username} 이미 가입된 이름입니다.`);
         }
 
         const user = await User.createUser(dto);

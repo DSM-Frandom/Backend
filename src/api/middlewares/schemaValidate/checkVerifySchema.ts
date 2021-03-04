@@ -1,5 +1,6 @@
 import Joi from "joi";
 
 export default Joi.object().keys({
-    verify: Joi.string().required()
+    email: Joi.string().email().required(),
+    verify: Joi.string().required(),
 }).unknown()

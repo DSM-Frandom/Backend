@@ -22,6 +22,16 @@ export default class UserService {
         await Report.createReport(dto, user);
     }
 
+    public async getLike(username: string): Promise<Like> {
+        const user = await User.getRepository().findOne({ username });
+        if(!user) {
+            throw new createHttpError.NotFound('User not found');
+        }
+
+        const like = await Like.getRepository().findOne({ user });
+        return like;
+    }
+
     public async like(username: string, id: number): Promise<void> {
         const user = await User.getRepository().findOne(id);
         const like = await this.findLikeByUser(username, user);

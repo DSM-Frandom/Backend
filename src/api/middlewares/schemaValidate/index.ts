@@ -5,6 +5,7 @@ import reportSchema from "./reportSchema";
 import likeSchema from "./likeSchema";
 import verifySchema from "./verifySchema";
 import checkVerifySchema from "./checkVerifySchema";
+import usernameSchema from "./usernameSchema";
 
 export {
     registerSchema,
@@ -14,4 +15,5 @@ export {
     likeSchema,
     verifySchema,
     checkVerifySchema,
+    usernameSchema,
 }
