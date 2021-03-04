@@ -4,6 +4,7 @@ import refreshSchema from "./refreshSchema";
 import reportSchema from "./reportSchema";
 import likeSchema from "./likeSchema";
 import verifySchema from "./verifySchema";
+import checkVerifySchema from "./checkVerifySchema";
 
 export {
     registerSchema,
@@ -12,4 +13,5 @@ export {
     reportSchema,
     likeSchema,
     verifySchema,
+    checkVerifySchema,
 }
