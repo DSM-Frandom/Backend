@@ -48,7 +48,7 @@ export default class SocketApp {
         socket.currentRoom = roomId;
         console.log(`${socket.nickname} is joined room ${roomId}`);
 
-        socket.in(roomId).emit('joinRoom', profile);
+        socket.broadcast.to(roomId).emit('joinRoom', profile);
         if (io.sockets.adapter.rooms.get(roomId).size === 2) {
           io.in(roomId).emit('matched');
         }
