@@ -42,16 +42,19 @@ export default class SocketApp {
 
       socket.on('search', async () => {
         const roomId = await this.socketService.search(socket.userId);
-        const profile = await this.userService.getProfile(socket.userId);
 
         await socket.join(roomId);
         socket.currentRoom = roomId;
         console.log(`${socket.nickname} is joined room ${roomId}`);
 
-        socket.broadcast.to(roomId).emit('joinRoom', profile);
         if (io.sockets.adapter.rooms.get(roomId).size === 2) {
-          io.in(roomId).emit('matched');
+          io.sockets.in(roomId).emit('matched');
         }
+      });
+
+      socket.on('joinRoom', async () => {
+        const profile = await this.userService.getProfile(socket.userId);
+        socket.broadcast.to(socket.currentRoom).emit('joinRoom', profile);
       });
 
       socket.on('leaveRoom', () => {
